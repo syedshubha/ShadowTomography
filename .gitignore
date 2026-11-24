@@ -1,0 +1,6 @@
+# Outputs written by neural_shadows.py and the notebooks
+results/
+notebooks/*.png
+notebooks/*.csv
+.ipynb_checkpoints/
+__pycache__/

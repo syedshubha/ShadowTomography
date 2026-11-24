@@ -1,0 +1,9 @@
+# Tested with Python 3.12 (CPU) on these versions.
+numpy==2.5.5
+scipy==1.18.1
+qutip==5.3.1
+scikit-learn==1.9.1
+torch==2.15.0
+pandas==3.1.1
+matplotlib==3.11.2
+tqdm==4.70.1
