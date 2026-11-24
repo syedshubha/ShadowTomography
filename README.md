@@ -51,6 +51,10 @@ The script writes the dataset and both figures to `results/`. Flags: `--samples`
 | [`data/quantum_shadow_dataset.csv`](data/quantum_shadow_dataset.csv) | 250 labeled feature vectors from the representative run |
 | [`docs/neural-shadows-report.pdf`](docs/neural-shadows-report.pdf) | Full report |
 
-## Authors
+## Author
 
-Syed Emad Uddin Shubha and Joseph Masters, Louisiana State University. Developed as a project for CSC 7333 (Machine Learning), Fall 2025.
+[Syed Emad Uddin Shubha](https://syedshubha.com), Louisiana State University. Developed for CSC 7333 (Machine Learning), Fall 2025.
+
+## License
+
+The code, notebooks, and data are released under the [MIT License](LICENSE). The course report in `docs/`, which lists Joseph Masters as co-author, is not covered by this license.
