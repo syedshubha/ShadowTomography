@@ -16,14 +16,16 @@ Over 100 Monte Carlo trials, each with a fresh dataset and split, all four model
 
 | Model | Mean F1 ± std (100 trials) |
 | --- | --- |
-| Logistic regression | 0.802 ± 0.049 |
-| Random forest | 0.820 ± 0.044 |
-| Feedforward network | 0.814 ± 0.048 |
-| RBF SVM | 0.799 ± 0.053 |
+| Logistic regression | 0.812 ± 0.053 |
+| Random forest | 0.803 ± 0.054 |
+| Feedforward network | 0.821 ± 0.046 |
+| RBF SVM | 0.799 ± 0.096 |
 
 With 25 snapshots, the shadow-reconstructed density matrix already carries most of the usable signal, and a linear model is competitive. Extra model capacity does not buy measurable accuracy at this sample size.
 
 ![Stability over 100 trials](figures/stability_analysis_plot.png)
+
+The table and figure come from the same run, `python neural_shadows.py --seed 7`; per-trial scores are in [`data/stability_scores.csv`](data/stability_scores.csv).
 
 A supplementary notebook grid-searches logistic regression and the network on one saved dataset. Gains from tuning on a single 50-state test split (shown below for the saved run) are about the size of the trial-to-trial spread above, so they are indicative only.
 
@@ -46,9 +48,10 @@ The script writes the dataset and both figures to `results/`. Flags: `--samples`
 | Path | Contents |
 | --- | --- |
 | [`neural_shadows.py`](neural_shadows.py) | Simulation, features, models, and both experiments as a command-line script |
-| [`notebooks/neural_shadows.ipynb`](notebooks/neural_shadows.ipynb) | The original notebook, with the outputs reported above |
+| [`notebooks/neural_shadows.ipynb`](notebooks/neural_shadows.ipynb) | The original course notebook and its saved outputs |
 | [`notebooks/hyperparameter_tuning.ipynb`](notebooks/hyperparameter_tuning.ipynb) | Grid search for logistic regression and the network on `data/` |
 | [`data/quantum_shadow_dataset.csv`](data/quantum_shadow_dataset.csv) | 250 labeled feature vectors from the representative run |
+| [`data/stability_scores.csv`](data/stability_scores.csv) | Per-trial F1 scores behind the stability table and figure |
 | [`docs/neural-shadows-report.pdf`](docs/neural-shadows-report.pdf) | Full report |
 
 ## Author

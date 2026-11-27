@@ -229,34 +229,34 @@ def run_single_trial(verbose=True):
 # -----------------------------------------------------------------------------
 # 5. EXPERIMENTS
 # -----------------------------------------------------------------------------
-METHODS = ["LogReg", "Random Forest", "FNN", "Shadow SVM"]
-COLORS = ["gray", "gray", "purple", "blue"]
+METHODS = ["Logistic regression", "Random forest", "Feedforward network", "RBF SVM"]
+COLORS = ["#9e9e9e", "#5f7f99", "#8e44ad", "#3f51b5"]
 
 
 def part_a(outdir):
     """Representative single trial; saves the dataset and a bar chart."""
     print("--- Executing Representative Trial ---")
     lr_s, rf_s, fnn_s, svm_s, X_final, y_final = run_single_trial()
-    print(f"Logistic Regression F1: {lr_s:.4f}")
-    print(f"Random Forest F1:       {rf_s:.4f}")
-    print(f"FNN F1 Score:           {fnn_s:.4f}")
-    print(f"Shadow SVM F1:          {svm_s:.4f}")
+    for name, score in zip(METHODS, (lr_s, rf_s, fnn_s, svm_s)):
+        print(f"{name + ':':<21}{score:.4f}")
 
     df = pd.DataFrame(X_final, columns=[f"feat_{i}" for i in range(16)])
     df["label"] = y_final
     df.to_csv(os.path.join(outdir, "quantum_shadow_dataset.csv"), index=False)
 
     scores = [lr_s, rf_s, fnn_s, svm_s]
-    plt.figure(figsize=(9, 5))
-    bars = plt.bar(METHODS, scores, color=COLORS)
-    plt.ylim(0, 1.05)
-    plt.ylabel("F1 Score")
-    plt.title(f"Single Trial Performance (N={N_SAMPLES}, T={T_SNAPSHOTS})")
+    fig, ax = plt.subplots(figsize=(9, 5))
+    bars = ax.bar(METHODS, scores, color=COLORS)
+    ax.set_ylim(0, 1.05)
+    ax.set_ylabel("F1 score")
+    ax.set_title(f"Single trial (N={N_SAMPLES}, T={T_SNAPSHOTS})")
     for bar in bars:
-        plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.01,
-                 f"{bar.get_height():.3f}", ha="center")
-    plt.savefig(os.path.join(outdir, "single_trial_plot.png"), dpi=200)
-    plt.close()
+        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.01,
+                f"{bar.get_height():.3f}", ha="center")
+    ax.spines[["top", "right"]].set_visible(False)
+    fig.tight_layout()
+    fig.savefig(os.path.join(outdir, "single_trial_plot.png"), dpi=200)
+    plt.close(fig)
 
 
 def part_b(outdir, num_trials):
@@ -270,21 +270,28 @@ def part_b(outdir, num_trials):
         results["FNN"].append(fnn)
         results["SVM"].append(svm)
 
-    means = [np.mean(results[k]) for k in ("LR", "RF", "FNN", "SVM")]
-    stds = [np.std(results[k]) for k in ("LR", "RF", "FNN", "SVM")]
+    keys = ("LR", "RF", "FNN", "SVM")
+    means = [np.mean(results[k]) for k in keys]
+    stds = [np.std(results[k]) for k in keys]
     print("\n--- Aggregated Statistics (Mean ± Std) ---")
-    for name, m, s in zip(["Logistic Regression", "Random Forest", "FNN", "Shadow SVM"], means, stds):
+    for name, m, s in zip(METHODS, means, stds):
         print(f"{name + ':':<21}{m:.3f} ± {s:.3f}")
+    pd.DataFrame({name: results[k] for name, k in zip(METHODS, keys)}).to_csv(
+        os.path.join(outdir, "stability_scores.csv"), index=False)
 
-    plt.figure(figsize=(9, 6))
-    plt.bar(METHODS, means, yerr=stds, capsize=10, color=COLORS, alpha=0.8)
-    plt.ylim(0, 1.0)
-    plt.ylabel("Mean F1 Score")
-    plt.title(f"Model Stability ({num_trials} Trials)")
-    for i, v in enumerate(means):
-        plt.text(i, v + 0.05, f"{v:.2f}", ha="center", fontweight="bold")
-    plt.savefig(os.path.join(outdir, "stability_analysis_plot.png"), dpi=200)
-    plt.close()
+    fig, ax = plt.subplots(figsize=(9, 5.5))
+    x = np.arange(len(METHODS))
+    ax.bar(x, means, yerr=stds, capsize=8, color=COLORS, error_kw={"elinewidth": 1.5})
+    ax.set_xticks(x, METHODS)
+    ax.set_ylim(0, 1.0)
+    ax.set_ylabel("Mean F1 score (error bars: ±1 std)")
+    ax.set_title(f"Model stability over {num_trials} trials")
+    for i, (m, s) in enumerate(zip(means, stds)):
+        ax.text(i, m + s + 0.02, f"{m:.3f}", ha="center", va="bottom", fontweight="bold")
+    ax.spines[["top", "right"]].set_visible(False)
+    fig.tight_layout()
+    fig.savefig(os.path.join(outdir, "stability_analysis_plot.png"), dpi=200)
+    plt.close(fig)
 
 
 def main():
