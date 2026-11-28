@@ -6,8 +6,8 @@ Script version of notebooks/neural_shadows.ipynb. It runs one representative
 trial (Part A) and a Monte Carlo stability analysis (Part B), and writes the
 dataset and both figures to --outdir.
 
-    python neural_shadows.py                  # 250 states, 25 snapshots, 100 trials
-    python neural_shadows.py --trials 10 --seed 7
+    python src/neural_shadows.py                  # 250 states, 25 snapshots, 100 trials
+    python src/neural_shadows.py --trials 10 --seed 7
 """
 import argparse
 import os

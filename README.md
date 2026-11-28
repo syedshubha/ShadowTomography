@@ -1,5 +1,7 @@
 # Neural Shadows: Classifying Entanglement from Classical Shadows
 
+[![CI](https://github.com/syedshubha/ShadowTomography/actions/workflows/ci.yml/badge.svg)](https://github.com/syedshubha/ShadowTomography/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Can a classical model tell entangled from separable two-qubit states using only a few randomized single-qubit measurements, without full state tomography? This project generates noisy Bell states, measures them with the classical-shadow protocol, and benchmarks four classifiers on the resulting features.
 
 ## Method
@@ -25,7 +27,7 @@ With 25 snapshots, the shadow-reconstructed density matrix already carries most 
 
 ![Stability over 100 trials](figures/stability_analysis_plot.png)
 
-The table and figure come from the same run, `python neural_shadows.py --seed 7`; per-trial scores are in [`data/stability_scores.csv`](data/stability_scores.csv).
+The table and figure come from the same run, `python src/neural_shadows.py --seed 7`; per-trial scores are in [`data/stability_scores.csv`](data/stability_scores.csv).
 
 A supplementary notebook grid-searches logistic regression and the network on one saved dataset. Gains from tuning on a single 50-state test split (shown below for the saved run) are about the size of the trial-to-trial spread above, so they are indicative only.
 
@@ -39,15 +41,17 @@ cd ShadowTomography
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
-python neural_shadows.py --seed 7              # full run: 1 trial + 100 Monte Carlo trials
-python neural_shadows.py --trials 10 --seed 7  # quick check (under a minute on a laptop CPU)
+python src/neural_shadows.py --seed 7              # full run: 1 trial + 100 Monte Carlo trials
+python src/neural_shadows.py --trials 10 --seed 7  # quick check (under a minute on a laptop CPU)
+python -m unittest discover -s tests              # physics and pipeline tests
 ```
 
 The script writes the dataset and both figures to `results/`. Flags: `--samples` (states per dataset, default 250), `--snapshots` (per state, default 25), `--trials` (0 skips the Monte Carlo study), `--seed`, `--outdir`.
 
 | Path | Contents |
 | --- | --- |
-| [`neural_shadows.py`](neural_shadows.py) | Simulation, features, models, and both experiments as a command-line script |
+| [`src/neural_shadows.py`](src/neural_shadows.py) | Simulation, features, models, and both experiments as a command-line script |
+| [`tests/`](tests/test_neural_shadows.py) | Concurrence and Werner-boundary checks, shadow-estimator convergence, and a short end-to-end run; CI runs them on every push |
 | [`notebooks/neural_shadows.ipynb`](notebooks/neural_shadows.ipynb) | The original course notebook and its saved outputs |
 | [`notebooks/hyperparameter_tuning.ipynb`](notebooks/hyperparameter_tuning.ipynb) | Grid search for logistic regression and the network on `data/` |
 | [`data/quantum_shadow_dataset.csv`](data/quantum_shadow_dataset.csv) | 250 labeled feature vectors from the representative run |
